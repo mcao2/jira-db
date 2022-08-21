@@ -6,6 +6,10 @@ You can add your own cron jobs so that you can run the scripts at a specific tim
 
 ## Installation
 
+### Dependencies
+- [jira-python](https://pypi.python.org/pypi/jira/)
+  - `python3 -m pip install --user --upgrade jira`
+
 ```shell
 git clone git@github.com:mcao2/jira-db.git --branch main
 ```
