@@ -1,0 +1,6 @@
+config.json
+jira.db
+jira.db-shm
+jira.db-wal
+*.ipynb
+__pycache__
