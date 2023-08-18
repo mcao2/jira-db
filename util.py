@@ -9,9 +9,9 @@ def get_current_date(tz_name="UTC"):
 def simplify_author(cur_obj: dict):
     simplified_obj = cur_obj.copy()
     if 'author' in cur_obj:
-        simplified_obj['author'] = cur_obj['author']['name']
+        simplified_obj['author'] = cur_obj['author']['emailAddress']
     if 'updateAuthor' in cur_obj:
-        simplified_obj['updateAuthor'] = cur_obj['updateAuthor']['name']
+        simplified_obj['updateAuthor'] = cur_obj['updateAuthor']['emailAddress']
     return simplified_obj
 
 

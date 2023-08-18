@@ -12,11 +12,19 @@ with open('config.json', 'r') as f:
     configs = json.load(f)
 
 ## Setup jira client
-jira_client = JIRA(configs.get('JiraServer'), token_auth=configs.get('JiraAuthToken'))
+jira_server = configs.get('JiraServer')
+is_jira_cloud = '.atlassian.net' in jira_server
+jira_client = None
+if is_jira_cloud:
+    # Jira cloud use api token
+    jira_client = JIRA(jira_server, basic_auth=(configs.get('JiraEmail'), configs.get('JiraApiToken')))
+else:
+    # Self hosted use PAT
+    jira_client = JIRA(jira_server, token_auth=configs.get('JiraAuthToken'))
 
 cur_user = jira_client.user(jira_client.current_user())
 cur_timezone = cur_user.raw['timeZone']
-print(f"Current user: {cur_user.name}, timezone: {cur_timezone}")
+print(f"Current user: {cur_user.displayName}, timezone: {cur_timezone}")
 
 with SQLiteHelper(configs.get('DBRootDir')) as db:
     latest_ticket_date = db.get_latest_date("ticket", "createdDate", cur_timezone)
@@ -55,7 +63,7 @@ with SQLiteHelper(configs.get('DBRootDir')) as db:
             issue_changelog = str(_changelog)
 
         entries.append(
-            (issue.key, issue.fields.reporter.name, issue.fields.assignee.name, issue.fields.description,
+            (issue.key, issue.fields.reporter.emailAddress, issue.fields.assignee.emailAddress, issue.fields.description,
              issue.fields.status.name, issue_comments, issue_changelog, issue.fields.created, str(issue.raw)))
 
         db.add("ticket", entries)
